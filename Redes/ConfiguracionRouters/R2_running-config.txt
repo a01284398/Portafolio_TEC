@@ -1,0 +1,97 @@
+!
+version 12.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname R2
+!
+!
+!
+!
+!
+ip dhcp pool Floor1DHCP
+ network 192.168.2.0 255.255.255.0
+ default-router 192.168.2.1
+ dns-server 192.168.2.1
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+no ip domain-lookup
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 192.168.2.1 255.255.255.0
+ ip ospf 20 area 0
+ ip access-group 102 out
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 10.1.1.2 255.255.255.0
+ ip ospf 20 area 0
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 20
+ log-adjacency-changes
+ network 10.0.0.0 0.255.255.255 area 0
+ network 192.168.1.0 0.0.0.0 area 0
+ network 192.168.2.0 0.0.0.0 area 0
+ network 192.168.1.0 0.0.0.255 area 0
+ network 192.168.2.0 0.0.0.255 area 0
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+access-list 102 deny ip 192.168.2.0 0.0.0.255 192.168.3.0 0.0.0.255
+access-list 102 deny ip 192.168.3.0 0.0.0.255 192.168.2.0 0.0.0.255
+access-list 102 deny ip 192.168.2.0 0.0.0.255 192.168.4.0 0.0.0.255
+access-list 102 deny ip 192.168.4.0 0.0.0.255 192.168.2.0 0.0.0.255
+access-list 102 deny ip 192.168.2.0 0.0.0.255 192.168.5.0 0.0.0.255
+access-list 102 deny ip 192.168.5.0 0.0.0.255 192.168.2.0 0.0.0.255
+access-list 102 permit ip any any
+!
+!
+!
+!
+!
+!
+line con 0
+ exec-timeout 0 0
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
+
